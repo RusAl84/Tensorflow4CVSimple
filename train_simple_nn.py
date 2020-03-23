@@ -24,12 +24,28 @@ import cv2
 import os
 
 # создаём парсер аргументов и передаём их
-ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--dataset", required=True,help="path to input dataset of images")
-ap.add_argument("-m", "--model", required=True,	help="path to output trained model")
-ap.add_argument("-l", "--label-bin", required=True,help="path to output label binarizer")
-ap.add_argument("-p", "--plot", required=True,help="path to output accuracy/loss plot")
-args = vars(ap.parse_args())
+# ap = argparse.ArgumentParser()
+# ap.add_argument("-d", "--dataset", required=False,help="path to input dataset of images")
+# ap.add_argument("-m", "--model", required=False,	help="path to output trained model")
+# ap.add_argument("-l", "--label-bin", required=False,help="path to output label binarizer")
+# ap.add_argument("-p", "--plot", required=False,help="path to output accuracy/loss plot")
+# args = vars(ap.parse_args())
+
+
+# Пути до файлов (вместо комадной строки
+dataset="d:\\Users\\user\\Desktop\\Blind-AI\\all_signs"
+path_model="d:\\Users\\user\\Desktop\\Blind-AI\\simple_nn.model"
+label_bin ="d:\\Users\\user\\Desktop\\Blind-AI\\simple_nn_lb.pickle"
+plot= "d:\\Users\\user\\Desktop\\Blind-AI\\simple_nn_plot.png"
+
+# инициализируем скорость обучения и общее число эпох
+INIT_LR = 0.0001
+#INIT_LR = 0.0001
+#EPOCHS = 1000
+EPOCHS = 50
+
+
+
 
 # инициализируем данные и метки
 print("[INFO] loading images...")
@@ -37,7 +53,9 @@ data = []
 labels = []
 
 # берём пути к изображениям и рандомно перемешиваем
-imagePaths = sorted(list(paths.list_images(args["dataset"])))
+
+imagePaths = sorted(list(paths.list_images(dataset)))
+#print(imagePaths)
 random.seed(42)
 random.shuffle(imagePaths)
 
@@ -87,13 +105,6 @@ model.add(Dropout(0.3))
 model.add(Dense(258, activation="sigmoid"))
 model.add(Dense(len(lb.classes_), activation="softmax"))
 
-# инициализируем скорость обучения и общее число эпох
-
-INIT_LR = 0.01
-#INIT_LR = 0.0001
-#EPOCHS = 1000
-EPOCHS = 500
-
 # компилируем модель, используя SGD как оптимизатор и категориальную
 # кросс-энтропию в качестве функции потерь (для бинарной классификации
 # следует использовать binary_crossentropy)
@@ -101,7 +112,9 @@ print("[INFO] training network...")
 opt = SGD(lr=INIT_LR)
 OPTIMIZER = opt
 #OPTIMIZER = Adam(lr=INIT_LR)
+
 model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER, metrics=["accuracy"])
+#model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER,  metrics=["binary_accuracy"])
 
 # обучаем нейросеть
 H = model.fit(trainX, trainY, validation_data=(testX, testY), epochs=EPOCHS, batch_size=32)
@@ -117,18 +130,21 @@ plt.style.use("ggplot")
 plt.figure()
 plt.plot(N, H.history["loss"], label="train_loss")
 plt.plot(N, H.history["val_loss"], label="val_loss")
-plt.plot(N, H.history["acc"], label="train_acc")
-plt.plot(N, H.history["val_acc"], label="val_acc")
+plt.plot(N, H.history["accuracy"], label="train_acc")
+plt.plot(N, H.history["val_accuracy"], label="val_acc")
+#plt.plot(N, H.history["acc"], label="train_acc")
+#plt.plot(N, H.history["val_acc"], label="val_acc")
 plt.title("Training Loss and Accuracy (Simple NN)")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
 plt.legend()
-plt.savefig(args["plot"])
+plt.savefig(plot)
 
 # сохраняем модель и бинаризатор меток на диск
 print("[INFO] serializing network and label binarizer...")
-model.save(args["model"])
-f = open(args["label_bin"], "wb")
+
+model.save(path_model)
+f = open(label_bin, "wb")
 f.write(pickle.dumps(lb))
 f.close()
 
