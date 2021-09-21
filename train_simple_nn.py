@@ -12,8 +12,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from keras.models import Sequential
 from keras.layers.core import Dense,Dropout
-from keras.optimizers import SGD
-from keras.optimizers import RMSprop,Adam
+# from keras.optimizers import SGD
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.optimizers import RMSprop,Adam
+# from keras.optimizers import
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,16 +35,16 @@ import os
 
 
 # Пути до файлов (вместо комадной строки
-dataset="d:\\Users\\user\\Desktop\\Blind-AI\\all_signs"
-path_model="d:\\Users\\user\\Desktop\\Blind-AI\\simple_nn.model"
-label_bin ="d:\\Users\\user\\Desktop\\Blind-AI\\simple_nn_lb.pickle"
-plot= "d:\\Users\\user\\Desktop\\Blind-AI\\simple_nn_plot.png"
+dataset=r'D:\ML\train_img'
+path_model=r"D:\ML\simple_nn.model"
+label_bin =r"D:\ML\simple_nn_lb.pickle"
+plot= r"D:\ML\simple_nn_plot.png"
 
 # инициализируем скорость обучения и общее число эпох
-INIT_LR = 0.0001
+INIT_LR = 0.01
 #INIT_LR = 0.0001
 #EPOCHS = 1000
-EPOCHS = 50
+EPOCHS = 5
 
 
 
@@ -111,6 +113,7 @@ model.add(Dense(len(lb.classes_), activation="softmax"))
 print("[INFO] training network...")
 opt = SGD(lr=INIT_LR)
 OPTIMIZER = opt
+
 #OPTIMIZER = Adam(lr=INIT_LR)
 
 model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER, metrics=["accuracy"])
