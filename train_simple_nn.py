@@ -26,12 +26,10 @@ import os
 dataset=r'D:\ML\train_img'
 path_model=r"./models/simple_nn"
 label_bin =r"./models/simple_nn.pickle"
-plot= r"D:\ML\simple_nn_plot.png"
-
+plot= r"./simple_nn_plot.png"
 # инициализируем скорость обучения и общее число эпох
 INIT_LR = 0.001
 EPOCHS = 3
-
 #INIT_LR = 0.0001
 #EPOCHS = 1000
 
@@ -124,8 +122,8 @@ plt.style.use("ggplot")
 plt.figure()
 plt.plot(N, H.history["loss"], label="train_loss")
 plt.plot(N, H.history["val_loss"], label="val_loss")
-# plt.plot(N, H.history["accuracy"], label="train_acc")
-# plt.plot(N, H.history["val_accuracy"], label="val_acc")
+plt.plot(N, H.history["accuracy"], label="train_acc")
+plt.plot(N, H.history["val_accuracy"], label="val_acc")
 #plt.plot(N, H.history["acc"], label="train_acc")
 #plt.plot(N, H.history["val_acc"], label="val_acc")
 plt.title("Training Loss and Accuracy (Simple NN)")
