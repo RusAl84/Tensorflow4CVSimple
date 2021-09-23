@@ -5,11 +5,9 @@ import cv2
 
 def predict(img):
 	image = cv2.imread(img)
-
 	image = cv2.resize(image, (16, 37))
 	# cv2.imshow('image', image)
 	cv2.waitKey(0)
-
 	image = image.astype("float") / 255.0
 
 

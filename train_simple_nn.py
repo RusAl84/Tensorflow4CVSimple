@@ -1,56 +1,42 @@
-# USAGE
-# https://www.reg.ru/blog/keras/
-# python train_simple_nn.py --dataset animals --model output/simple_nn.model --label-bin output/simple_nn_lb.pickle --plot output/simple_nn_plot.png
-
-# импортируем бэкенд Agg из matplotlib для сохранения графиков на диск
 import matplotlib
 matplotlib.use("Agg")
 
-# подключаем необходимые пакеты
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+
 from keras.models import Sequential
 from keras.layers.core import Dense,Dropout
-# from keras.optimizers import SGD
+
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.optimizers import RMSprop,Adam
-# from keras.optimizers import
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
-import argparse
 import random
 import pickle
 import cv2
 import os
 
-# создаём парсер аргументов и передаём их
-# ap = argparse.ArgumentParser()
-# ap.add_argument("-d", "--dataset", required=False,help="path to input dataset of images")
-# ap.add_argument("-m", "--model", required=False,	help="path to output trained model")
-# ap.add_argument("-l", "--label-bin", required=False,help="path to output label binarizer")
-# ap.add_argument("-p", "--plot", required=False,help="path to output accuracy/loss plot")
-# args = vars(ap.parse_args())
 
 
-# Пути до файлов (вместо комадной строки
+# Пути до файлов
 dataset=r'D:\ML\train_img'
 path_model=r"D:\ML\simple_nn.model"
 label_bin =r"D:\ML\simple_nn_lb.pickle"
 plot= r"D:\ML\simple_nn_plot.png"
 
 # инициализируем скорость обучения и общее число эпох
-INIT_LR = 0.01
-#INIT_LR = 0.0001
-#EPOCHS = 1000
+INIT_LR = 0.001
 EPOCHS = 5
 
+#INIT_LR = 0.0001
+#EPOCHS = 1000
 
 
 
 # инициализируем данные и метки
-print("[INFO] loading images...")
+print("[INFO] Загрузка изображений...")
 data = []
 labels = []
 
@@ -113,7 +99,6 @@ model.add(Dense(len(lb.classes_), activation="softmax"))
 print("[INFO] training network...")
 opt = SGD(lr=INIT_LR)
 OPTIMIZER = opt
-
 #OPTIMIZER = Adam(lr=INIT_LR)
 
 model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER, metrics=["accuracy"])

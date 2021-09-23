@@ -1,7 +1,7 @@
 import sys
-from PyQt5 import uic
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, qApp
+from PyQt6 import uic
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from predict_sign import predict
 from description import sign_description
 
@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         uic.loadUi('./NeuroUI.ui', self)
 
         self.pushButton.clicked.connect(self.btn_on_click)
-        self.pushButton_2.clicked.connect(qApp.quit)
+        self.pushButton_2.clicked.connect(self.quit)
 
     def btn_on_click(self):
         self.browse()
@@ -28,6 +28,9 @@ class MainWindow(QMainWindow):
         self.load_sign()
         self.show_percent()
         self.load_description()
+
+    def quit(self):
+        sys.exit(app.exec())
 
     def browse(self):
         self.path_2_img = QFileDialog.getOpenFileName(self, 'Open file', './test_set/')[0]
@@ -72,4 +75,4 @@ if __name__ == '__main__':
     window = MainWindow()
     window.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
