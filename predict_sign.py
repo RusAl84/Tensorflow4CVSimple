@@ -14,7 +14,7 @@ def predict(img):
 	image = image.flatten()
 	image = image.reshape((1, image.shape[0]))
 
-	model = load_model('./models/simple_nn.model')
+	model = load_model('./models/simple_nn')
 	lb = pickle.loads(open('./models/simple_nn.pickle', "rb").read())
 
 	preds = model.predict(image)

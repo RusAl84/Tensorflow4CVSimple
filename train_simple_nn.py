@@ -1,4 +1,6 @@
 import matplotlib
+import tensorflow
+
 matplotlib.use("Agg")
 
 from sklearn.preprocessing import LabelBinarizer
@@ -9,7 +11,7 @@ from keras.models import Sequential
 from keras.layers.core import Dense,Dropout
 
 from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.optimizers import RMSprop,Adam
+# from tensorflow.keras.optimizers import RMSprop,Adam
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,13 +24,13 @@ import os
 
 # Пути до файлов
 dataset=r'D:\ML\train_img'
-path_model=r"D:\ML\simple_nn.model"
-label_bin =r"D:\ML\simple_nn_lb.pickle"
+path_model=r"./models/simple_nn"
+label_bin =r"./models/simple_nn.pickle"
 plot= r"D:\ML\simple_nn_plot.png"
 
 # инициализируем скорость обучения и общее число эпох
 INIT_LR = 0.001
-EPOCHS = 5
+EPOCHS = 3
 
 #INIT_LR = 0.0001
 #EPOCHS = 1000
@@ -97,11 +99,15 @@ model.add(Dense(len(lb.classes_), activation="softmax"))
 # кросс-энтропию в качестве функции потерь (для бинарной классификации
 # следует использовать binary_crossentropy)
 print("[INFO] training network...")
-opt = SGD(lr=INIT_LR)
-OPTIMIZER = opt
+
+OPTIMIZER = SGD(lr=INIT_LR)
+# OPTIMIZER = tensorflow.keras.optimizers.SGD(learning_rate=0.1)
 #OPTIMIZER = Adam(lr=INIT_LR)
 
-model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER, metrics=["accuracy"])
+
+# model.compile(loss='mean_squared_error', optimizer='sgd')
+# model.compile(loss="categorical_crossentropy",  optimizer=OPTIMIZER)
+model.compile(loss="categorical_crossentropy",  optimizer=OPTIMIZER, metrics=["accuracy"])
 #model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER,  metrics=["binary_accuracy"])
 
 # обучаем нейросеть
@@ -118,8 +124,8 @@ plt.style.use("ggplot")
 plt.figure()
 plt.plot(N, H.history["loss"], label="train_loss")
 plt.plot(N, H.history["val_loss"], label="val_loss")
-plt.plot(N, H.history["accuracy"], label="train_acc")
-plt.plot(N, H.history["val_accuracy"], label="val_acc")
+# plt.plot(N, H.history["accuracy"], label="train_acc")
+# plt.plot(N, H.history["val_accuracy"], label="val_acc")
 #plt.plot(N, H.history["acc"], label="train_acc")
 #plt.plot(N, H.history["val_acc"], label="val_acc")
 plt.title("Training Loss and Accuracy (Simple NN)")
@@ -132,6 +138,7 @@ plt.savefig(plot)
 print("[INFO] serializing network and label binarizer...")
 
 model.save(path_model)
+# model.save('model.model')
 f = open(label_bin, "wb")
 f.write(pickle.dumps(lb))
 f.close()
