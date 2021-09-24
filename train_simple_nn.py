@@ -1,7 +1,7 @@
-import matplotlib
-import tensorflow
-
-matplotlib.use("Agg")
+import os
+import random
+import pickle
+import cv2
 
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
@@ -15,12 +15,9 @@ from tensorflow.keras.optimizers import SGD
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
-import random
-import pickle
-import cv2
-import os
 
-
+import matplotlib
+matplotlib.use("Agg")
 
 # Пути до файлов
 dataset=r'D:\ML\train_img'
