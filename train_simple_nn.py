@@ -20,13 +20,13 @@ import matplotlib
 matplotlib.use("Agg")
 
 # Пути до файлов
-dataset=r'D:\ML\train_img'
+dataset=r'D:\ML\all_signs'
 path_model=r"./models/simple_nn"
 label_bin =r"./models/simple_nn.pickle"
 plot= r"./simple_nn_plot.png"
 # инициализируем скорость обучения и общее число эпох
-INIT_LR = 0.001
-EPOCHS = 3
+INIT_LR = 0.1
+EPOCHS = 5
 #INIT_LR = 0.0001
 #EPOCHS = 1000
 
@@ -85,10 +85,11 @@ model.add(Dense(1024, input_shape=(1776,), activation="sigmoid"))
 #model.add(Dense(2048, input_shape=(3072,), activation="sigmoid"))
 model.add(Dropout(0.3)) #прореживание - увеличивать кол-во эпох при приминении, например до 200.
 #model.add(Dense(1024, activation="sigmoid"))
-model.add(Dense(512, activation="sigmoid"))
+model.add(Dense(1024, activation="sigmoid"))
 model.add(Dropout(0.3))
-model.add(Dense(258, activation="sigmoid"))
+model.add(Dense(512, activation="sigmoid"))
 model.add(Dense(len(lb.classes_), activation="softmax"))
+
 
 # компилируем модель, используя SGD как оптимизатор и категориальную
 # кросс-энтропию в качестве функции потерь (для бинарной классификации
@@ -96,11 +97,11 @@ model.add(Dense(len(lb.classes_), activation="softmax"))
 print("[INFO] training network...")
 
 OPTIMIZER = SGD(lr=INIT_LR)
-# OPTIMIZER = tensorflow.keras.optimizers.SGD(learning_rate=0.1)
+#OPTIMIZER = tensorflow.keras.optimizers.SGD(learning_rate=0.1)
 #OPTIMIZER = Adam(lr=INIT_LR)
 
 
-# model.compile(loss='mean_squared_error', optimizer='sgd')
+# model.compile(loss='mean_squared_error', optimizer='sgd', metrics=["accuracy"])
 # model.compile(loss="categorical_crossentropy",  optimizer=OPTIMIZER)
 model.compile(loss="categorical_crossentropy",  optimizer=OPTIMIZER, metrics=["accuracy"])
 #model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER,  metrics=["binary_accuracy"])
