@@ -1,8 +1,7 @@
-# Tensorflow4CVSimple
-
-Здесь находится дата сет:
+# Здесь находится дата сет:
 
 https://icedrive.net/s/BY3gPki21WTZ95wuWPztgASx5i7k
 
-Установка
+# Установка
+
 pip install -r .\requirements.txt
