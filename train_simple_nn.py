@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 from keras.models import Sequential
-from keras.layers.core import Dense,Dropout
+from keras.layers.core import Dense, Dropout
 
 from tensorflow.keras.optimizers import SGD
 # from tensorflow.keras.optimizers import RMSprop,Adam
@@ -20,16 +20,13 @@ import matplotlib
 matplotlib.use("Agg")
 
 # Пути до файлов
-dataset=r'D:\ML\all_signs'
-path_model=r"./models/simple_nn"
-label_bin =r"./models/simple_nn.pickle"
-plot= r"./simple_nn_plot.png"
+dataset = r'D:/ML/all_signs'
+path_model = r"./models/simple_nn"
+label_bin = r"./models/simple_nn.pickle"
+plot = r"./simple_nn_plot.png"
 # инициализируем скорость обучения и общее число эпох
-INIT_LR = 0.1
+INIT_LR = 0.0001
 EPOCHS = 5
-#INIT_LR = 0.0001
-#EPOCHS = 1000
-
 
 
 # инициализируем данные и метки
@@ -40,27 +37,28 @@ labels = []
 # берём пути к изображениям и рандомно перемешиваем
 
 imagePaths = sorted(list(paths.list_images(dataset)))
-#print(imagePaths)
+# print(imagePaths)
 random.seed(42)
 random.shuffle(imagePaths)
 
 
 # цикл по изображениям
 for imagePath in imagePaths:
-	# загружаем изображение, меняем размер на 32x32 пикселей (без учета
-	# соотношения сторон), сглаживаем его в 32x32x3=3072 пикселей и
-	# добавляем в список
-        image = cv2.imread(imagePath)
-        try:
-                image = cv2.resize(image, (16, 37)).flatten()
-        except:
-                continue
-        data.append(image)
+    # загружаем изображение, меняем размер на 32x32 пикселей (без учета
+    # соотношения сторон), сглаживаем его в 32x32x3=3072 пикселей и
+    # добавляем в список
+    image = cv2.imread(imagePath)
+    try:
+        image = cv2.resize(image, (16, 37)).flatten()
+        # image = cv2.resize(image, (32, 32)).flatten()
+    except:
+        continue
+    data.append(image)
 
-	# извлекаем метку класса из пути к изображению и обновляем
-	# список меток
-        label = imagePath.split(os.path.sep)[-2]
-        labels.append(label)
+    # извлекаем метку класса из пути к изображению и обновляем
+    # список меток
+    label = imagePath.split(os.path.sep)[-2]
+    labels.append(label)
 
 # масштабируем интенсивности пикселей в диапазон [0, 1]
 data = np.array(data, dtype="float") / 255.0
@@ -68,7 +66,8 @@ labels = np.array(labels)
 
 # разбиваем данные на обучающую и тестовую выборки, используя 75%
 # данных для обучения и оставшиеся 25% для тестирования
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=42)
+(trainX, testX, trainY, testY) = train_test_split(
+    data, labels, test_size=0.25, random_state=42)
 
 # конвертируем метки из целых чисел в векторы (для 2х классов при
 # бинарной классификации вам следует использовать функцию Keras
@@ -83,8 +82,8 @@ testY = lb.transform(testY)
 model = Sequential()
 model.add(Dense(1024, input_shape=(1776,), activation="sigmoid"))
 #model.add(Dense(2048, input_shape=(3072,), activation="sigmoid"))
-model.add(Dropout(0.3)) #прореживание - увеличивать кол-во эпох при приминении, например до 200.
-#model.add(Dense(1024, activation="sigmoid"))
+# прореживание - увеличивать кол-во эпох при приминении, например до 200.
+model.add(Dropout(0.3))
 model.add(Dense(1024, activation="sigmoid"))
 model.add(Dropout(0.3))
 model.add(Dense(512, activation="sigmoid"))
@@ -103,16 +102,19 @@ OPTIMIZER = SGD(lr=INIT_LR)
 
 # model.compile(loss='mean_squared_error', optimizer='sgd', metrics=["accuracy"])
 # model.compile(loss="categorical_crossentropy",  optimizer=OPTIMIZER)
-model.compile(loss="categorical_crossentropy",  optimizer=OPTIMIZER, metrics=["accuracy"])
+model.compile(loss="categorical_crossentropy",
+              optimizer=OPTIMIZER, metrics=["accuracy"])
 #model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER,  metrics=["binary_accuracy"])
 
 # обучаем нейросеть
-H = model.fit(trainX, trainY, validation_data=(testX, testY), epochs=EPOCHS, batch_size=32)
+H = model.fit(trainX, trainY, validation_data=(
+    testX, testY), epochs=EPOCHS, batch_size=32)
 
 # оцениваем нейросеть
 print("[INFO] evaluating network...")
 predictions = model.predict(testX, batch_size=32)
-print(classification_report(testY.argmax(axis=1),predictions.argmax(axis=1), target_names=lb.classes_))
+print(classification_report(testY.argmax(axis=1),
+      predictions.argmax(axis=1), target_names=lb.classes_))
 
 # строим графики потерь и точности
 N = np.arange(0, EPOCHS)
@@ -139,8 +141,7 @@ f = open(label_bin, "wb")
 f.write(pickle.dumps(lb))
 f.close()
 
-#model.summary()
+# model.summary()
 score = model.evaluate(testX, testY, verbose=1)
 print("\nTest score:", score[0])
 print('Test accuracy:', score[1])
-
